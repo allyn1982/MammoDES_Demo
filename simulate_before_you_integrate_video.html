@@ -1,0 +1,341 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: transparent; }
+
+#video-wrap {
+  font-family: var(--font-sans);
+  background: #0d0d0d;
+  border-radius: 14px;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16/9;
+  min-height: 320px;
+  max-height: 480px;
+}
+
+#scene {
+  width: 100%; height: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.frame {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 48px;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  text-align: center;
+}
+.frame.active { opacity: 1; }
+
+.bg-dark  { background: #0d0d0d; }
+.bg-warm  { background: #1a1008; }
+.bg-cool  { background: #060d1a; }
+.bg-teal  { background: #061812; }
+.bg-end   { background: #120822; }
+
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #6b7280;
+  margin-bottom: 12px;
+}
+.headline {
+  font-size: clamp(20px, 3.5vw, 32px);
+  font-weight: 500;
+  color: #f5f0eb;
+  line-height: 1.25;
+  max-width: 560px;
+}
+.headline em { color: #f2a623; font-style: normal; }
+.headline .hl-teal { color: #5dcaa5; font-style: normal; }
+.headline .hl-coral { color: #f0997b; font-style: normal; }
+.sub {
+  font-size: clamp(13px, 1.8vw, 15px);
+  color: #9ca3af;
+  margin-top: 14px;
+  max-width: 480px;
+  line-height: 1.6;
+}
+.sub strong { color: #d1d5db; font-weight: 500; }
+
+.stat-row {
+  display: flex;
+  gap: 28px;
+  margin-top: 24px;
+  justify-content: center;
+}
+.stat-box {
+  background: rgba(255,255,255,0.06);
+  border: 0.5px solid rgba(255,255,255,0.12);
+  border-radius: 10px;
+  padding: 14px 20px;
+  text-align: center;
+}
+.stat-num {
+  font-size: clamp(22px, 3vw, 28px);
+  font-weight: 500;
+  color: #f2a623;
+}
+.stat-label {
+  font-size: 11px;
+  color: #6b7280;
+  margin-top: 4px;
+  letter-spacing: 0.05em;
+}
+
+.tag-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 20px;
+}
+.tag {
+  background: rgba(93,202,165,0.12);
+  border: 0.5px solid rgba(93,202,165,0.3);
+  color: #5dcaa5;
+  font-size: 12px;
+  padding: 5px 12px;
+  border-radius: 20px;
+}
+
+#progress-wrap {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background: rgba(255,255,255,0.08);
+}
+#progress-bar {
+  height: 100%;
+  background: #f2a623;
+  width: 0%;
+  transition: width 0.12s linear;
+}
+
+#controls {
+  position: absolute;
+  bottom: 10px;
+  right: 12px;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.ctrl-btn {
+  background: rgba(255,255,255,0.1);
+  border: none;
+  border-radius: 6px;
+  color: #d1d5db;
+  font-size: 13px;
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: background 0.15s;
+  font-family: var(--font-sans);
+}
+.ctrl-btn:hover { background: rgba(255,255,255,0.2); }
+
+#counter {
+  position: absolute;
+  bottom: 14px;
+  left: 14px;
+  font-size: 11px;
+  color: #4b5563;
+}
+
+.flow-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+  font-size: 12px;
+  color: #6b7280;
+}
+.flow-node {
+  background: rgba(255,255,255,0.06);
+  border: 0.5px solid rgba(255,255,255,0.14);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 12px;
+  color: #d1d5db;
+}
+.flow-arrow { color: #374151; font-size: 16px; }
+.flow-node.highlight {
+  border-color: rgba(93,202,165,0.5);
+  background: rgba(93,202,165,0.1);
+  color: #5dcaa5;
+}
+</style>
+
+<div id="video-wrap">
+  <div id="scene">
+
+    <div class="frame bg-dark active" id="f0">
+      <div class="eyebrow">Research explainer</div>
+      <div class="headline">Simulate Before You <em>Integrate</em></div>
+      <div class="sub">How a virtual clinic reveals what happens when AI meets a real breast imaging workflow — before a single patient is affected.</div>
+    </div>
+
+    <div class="frame bg-warm" id="f1">
+      <div class="eyebrow">The problem</div>
+      <div class="headline">Mammogram looks uncertain?<br><span class="hl-coral">She waits days. Then comes back.</span></div>
+      <div class="sub">A BI-RADS 0 result sends patients home for weeks of anxiety — and some never return at all. AI can read scans in real time. So why not keep her there for same-day follow-up?</div>
+    </div>
+
+    <div class="frame bg-dark" id="f2">
+      <div class="eyebrow">The catch</div>
+      <div class="headline">A clinic is a <em>finely-tuned machine</em></div>
+      <div class="flow-row">
+        <div class="flow-node">Check-in</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node">Mammography</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node highlight">AI flag</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node">Same-day diagnostic imaging</div>
+      </div>
+      <div class="sub" style="margin-top:18px">Add one new step and radiologists, equipment, and schedules all compete differently. The ripple effects are invisible until it's too late.</div>
+    </div>
+
+    <div class="frame bg-teal" id="f3">
+      <div class="eyebrow">The solution</div>
+      <div class="headline">Build a <span class="hl-teal">virtual clinic</span> and run it hundreds of times</div>
+      <div class="sub">Discrete event simulation — grounded in real data from UCLA's Barbara Kort Women's Imaging Center — lets us test "what if" scenarios in minutes, not months.</div>
+    </div>
+
+    <div class="frame bg-warm" id="f4">
+      <div class="eyebrow">Study 1 findings · AMIA 2024</div>
+      <div class="headline">Without changes, adding AI same-day imaging causes real disruption</div>
+      <div class="stat-row">
+        <div class="stat-box"><div class="stat-num">−4%</div><div class="stat-label">Daily patients seen</div></div>
+        <div class="stat-box"><div class="stat-num">+24%</div><div class="stat-label">Time in clinic</div></div>
+        <div class="stat-box"><div class="stat-num">+31%</div><div class="stat-label">Wait before exams</div></div>
+      </div>
+    </div>
+
+    <div class="frame bg-cool" id="f5">
+      <div class="eyebrow">The fix · AMIA 2024 Study 2</div>
+      <div class="headline">The right configuration <span class="hl-teal">almost eliminates</span> disruption</div>
+      <div class="tag-row">
+        <span class="tag">Morning-only AI module (9am–12pm)</span>
+        <span class="tag">All 4 radiologists stay flexible</span>
+        <span class="tag">Only −4% volume or +2% hours</span>
+      </div>
+      <div class="sub" style="margin-top:16px">Simulation also modeled financial costs of reserving same-day slots — turning outputs into numbers administrators can actually weigh.</div>
+    </div>
+
+    <div class="frame bg-dark" id="f6">
+      <div class="eyebrow">Study 3 · JACR 2025</div>
+      <div class="headline">Schedule <em>higher-risk</em> patients first</div>
+      <div class="sub">Using AI risk scores + patient data, scheduling templates sequence patients by cancer risk — giving those most likely to need same-day imaging the best chance of getting it. <strong>More efficient. More equitable.</strong></div>
+    </div>
+
+    <div class="frame bg-teal" id="f7">
+      <div class="eyebrow">Open source</div>
+      <div class="headline"><span class="hl-teal">MammoDES</span> — free to adapt for your clinic</div>
+      <div class="sub">All simulation frameworks are on GitHub, written in Python with SimPy. Toggle the AI module, test radiologist assignments, experiment with morning vs afternoon workflows.</div>
+    </div>
+
+    <div class="frame bg-end" id="f8">
+      <div class="eyebrow">The takeaway</div>
+      <div class="headline">Diagnostic accuracy alone isn't enough.<br><em>System-level design matters.</em></div>
+      <div class="sub">Simulation lets us pressure-test AI integration while the stakes are still hypothetical. Not to predict the future — but to ask the right questions before committing to irreversible change.</div>
+    </div>
+
+  </div>
+
+  <div id="progress-wrap"><div id="progress-bar"></div></div>
+  <div id="counter">1 / 9</div>
+  <div id="controls">
+    <button class="ctrl-btn" id="btn-prev">‹ Prev</button>
+    <button class="ctrl-btn" id="btn-play">⏸ Pause</button>
+    <button class="ctrl-btn" id="btn-next">Next ›</button>
+  </div>
+</div>
+
+<script>
+const frames = document.querySelectorAll('.frame');
+const bar = document.getElementById('progress-bar');
+const counter = document.getElementById('counter');
+const btnPlay = document.getElementById('btn-play');
+const DURATIONS = [5000,6500,7000,6000,7000,7500,7000,6000,8000];
+let current = 0;
+let playing = true;
+let timer = null;
+let rafId = null;
+
+function showFrame(idx) {
+  frames.forEach((f,i) => f.classList.toggle('active', i===idx));
+  counter.textContent = (idx+1)+' / '+frames.length;
+}
+
+function animateBar(duration) {
+  cancelAnimationFrame(rafId);
+  const start = performance.now();
+  function tick(now) {
+    const pct = Math.min((now - start) / duration, 1);
+    bar.style.width = (pct * 100) + '%';
+    if (pct < 1) rafId = requestAnimationFrame(tick);
+  }
+  rafId = requestAnimationFrame(tick);
+}
+
+function startSlide(idx) {
+  current = idx;
+  showFrame(idx);
+  bar.style.width = '0%';
+  if (playing) {
+    animateBar(DURATIONS[idx]);
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      if (current < frames.length - 1) startSlide(current + 1);
+      else {
+        playing = false;
+        btnPlay.textContent = '▶ Replay';
+        bar.style.width = '100%';
+        cancelAnimationFrame(rafId);
+      }
+    }, DURATIONS[idx]);
+  }
+}
+
+btnPlay.addEventListener('click', () => {
+  if (btnPlay.textContent.includes('Replay')) {
+    playing = true;
+    btnPlay.textContent = '⏸ Pause';
+    startSlide(0);
+    return;
+  }
+  playing = !playing;
+  if (playing) {
+    btnPlay.textContent = '⏸ Pause';
+    startSlide(current);
+  } else {
+    clearTimeout(timer);
+    cancelAnimationFrame(rafId);
+    btnPlay.textContent = '▶ Play';
+  }
+});
+
+document.getElementById('btn-prev').addEventListener('click', () => {
+  clearTimeout(timer); cancelAnimationFrame(rafId);
+  if (current > 0) startSlide(current - 1);
+});
+
+document.getElementById('btn-next').addEventListener('click', () => {
+  clearTimeout(timer); cancelAnimationFrame(rafId);
+  if (current < frames.length - 1) startSlide(current + 1);
+});
+
+startSlide(0);
+</script>
