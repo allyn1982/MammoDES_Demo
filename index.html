@@ -111,19 +111,6 @@ body { background: transparent; }
   border-radius: 20px;
 }
 
-#progress-wrap {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 3px;
-  background: rgba(255,255,255,0.08);
-}
-#progress-bar {
-  height: 100%;
-  background: #f2a623;
-  width: 0%;
-  transition: width 0.12s linear;
-}
-
 #controls {
   position: absolute;
   bottom: 10px;
@@ -254,88 +241,30 @@ body { background: transparent; }
 
   </div>
 
-  <div id="progress-wrap"><div id="progress-bar"></div></div>
   <div id="counter">1 / 9</div>
   <div id="controls">
     <button class="ctrl-btn" id="btn-prev">‹ Prev</button>
-    <button class="ctrl-btn" id="btn-play">⏸ Pause</button>
     <button class="ctrl-btn" id="btn-next">Next ›</button>
   </div>
 </div>
 
 <script>
 const frames = document.querySelectorAll('.frame');
-const bar = document.getElementById('progress-bar');
 const counter = document.getElementById('counter');
-const btnPlay = document.getElementById('btn-play');
-const DURATIONS = [5000,6500,7000,6000,7000,7500,7000,6000,8000];
 let current = 0;
-let playing = true;
-let timer = null;
-let rafId = null;
 
 function showFrame(idx) {
-  frames.forEach((f,i) => f.classList.toggle('active', i===idx));
-  counter.textContent = (idx+1)+' / '+frames.length;
+  frames.forEach((f, i) => f.classList.toggle('active', i === idx));
+  counter.textContent = (idx + 1) + ' / ' + frames.length;
 }
-
-function animateBar(duration) {
-  cancelAnimationFrame(rafId);
-  const start = performance.now();
-  function tick(now) {
-    const pct = Math.min((now - start) / duration, 1);
-    bar.style.width = (pct * 100) + '%';
-    if (pct < 1) rafId = requestAnimationFrame(tick);
-  }
-  rafId = requestAnimationFrame(tick);
-}
-
-function startSlide(idx) {
-  current = idx;
-  showFrame(idx);
-  bar.style.width = '0%';
-  if (playing) {
-    animateBar(DURATIONS[idx]);
-    clearTimeout(timer);
-    timer = setTimeout(() => {
-      if (current < frames.length - 1) startSlide(current + 1);
-      else {
-        playing = false;
-        btnPlay.textContent = '▶ Replay';
-        bar.style.width = '100%';
-        cancelAnimationFrame(rafId);
-      }
-    }, DURATIONS[idx]);
-  }
-}
-
-btnPlay.addEventListener('click', () => {
-  if (btnPlay.textContent.includes('Replay')) {
-    playing = true;
-    btnPlay.textContent = '⏸ Pause';
-    startSlide(0);
-    return;
-  }
-  playing = !playing;
-  if (playing) {
-    btnPlay.textContent = '⏸ Pause';
-    startSlide(current);
-  } else {
-    clearTimeout(timer);
-    cancelAnimationFrame(rafId);
-    btnPlay.textContent = '▶ Play';
-  }
-});
 
 document.getElementById('btn-prev').addEventListener('click', () => {
-  clearTimeout(timer); cancelAnimationFrame(rafId);
-  if (current > 0) startSlide(current - 1);
+  if (current > 0) { current--; showFrame(current); }
 });
 
 document.getElementById('btn-next').addEventListener('click', () => {
-  clearTimeout(timer); cancelAnimationFrame(rafId);
-  if (current < frames.length - 1) startSlide(current + 1);
+  if (current < frames.length - 1) { current++; showFrame(current); }
 });
 
-startSlide(0);
+showFrame(0);
 </script>
